@@ -1,6 +1,5 @@
 """
-File ini isinya "satpam" yang mengecek apakah data yang dimasukkan
-user itu masuk akal atau tidak, sebelum disimpan ke sistem.
+Ini file buat memvalidasi apakah user inputnya ngaco atau bener
 """
 
 import re
