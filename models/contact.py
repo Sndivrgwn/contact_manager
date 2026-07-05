@@ -1,6 +1,5 @@
 """
-File ini isinya cuma "cetakan" data untuk satu kontak.
-Bayangkan seperti kartu nama digital: ada nama, nomor telepon, dan email.
+File ini isinya cuma template data buat satu kontak.
 """
 
 

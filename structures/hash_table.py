@@ -1,28 +1,18 @@
 """
-HASH TABLE - Sederhananya:
-Bayangkan ini seperti loker bernomor. Setiap nomor telepon diubah jadi
-"kode loker" (lewat fungsi hash), lalu kontaknya disimpan di loker itu.
-Jadi waktu mau cari nomor tertentu, kita langsung tahu ke loker mana harus
-lihat, tidak perlu cek satu-satu. Makanya pencariannya disebut O(1) alias
-hampir instan.
-
-Kegunaan di aplikasi ini:
-- Mencari kontak berdasarkan nomor telepon secara instan
-- Mengecek apakah nomor sudah terdaftar atau belum (cegah duplikat)
+Hash table itu kan metode key value jadi kita nyimpen key node dan bisa kita pake 
+buat cari value yang kita mau. Misalkan saya nyari nomor 08sekian nah hash table 
+langsung tau dia disimpen dimana node nya karna udah ada key nya
 """
 
 
 class HashTable:
     def __init__(self, jumlah_ember: int = 128):
-        # "Ember" adalah wadah-wadah kosong tempat data akan disimpan.
-        # Tiap ember berisi list, karena bisa saja dua nomor "nyasar"
-        # ke ember yang sama (disebut tabrakan/collision).
         self.jumlah_ember = jumlah_ember
         self.ember = [[] for _ in range(jumlah_ember)]
         self.jumlah_data = 0
 
     def _hash(self, key: str) -> int:
-        """Fungsi yang mengubah nomor telepon jadi nomor ember (0 sampai jumlah_ember-1)."""
+        """Fungsi yang mengubah nomor telepon jadi nomor ember(key nya hashtable)."""
         return sum(ord(karakter) for karakter in key) % self.jumlah_ember
 
     def set(self, key: str, value):

@@ -1,13 +1,5 @@
 """
-CONTACT MANAGER - Ini adalah "otak" dari aplikasi.
-File ini menggabungkan ketiga struktur data (AVL Tree, Hash Table, Trie)
-supaya bekerja bersama-sama setiap kali ada kontak ditambah, dicari,
-diubah, atau dihapus. GUI (tampilan) tidak perlu tahu detail rumit
-struktur data, cukup panggil fungsi-fungsi di file ini.
-
-Catatan asumsi sederhana untuk keperluan tugas:
-- Nama kontak dianggap unik (jadi key utama di AVL Tree & Trie)
-- Nomor telepon juga dianggap unik (jadi key utama di Hash Table)
+disini kita menghubungkan avl tree hash table dan trie jadi di gui tinggal tampil visual
 """
 
 import csv
@@ -22,17 +14,15 @@ from utils.validators import validasi_nama, validasi_nomor, validasi_email
 
 class ContactManager:
     def __init__(self):
-        self.avl = AVLTree()            # menyimpan kontak terurut berdasarkan nama
-        self.hash_table = HashTable()   # menyimpan kontak berdasarkan nomor telepon
-        self.trie = Trie()              # menyimpan nama untuk fitur autocomplete
-        self.trie_nomor = Trie()        # menyimpan nomor telepon untuk pencarian awalan (mis. "0815")
+        self.avl = AVLTree()            
+        self.hash_table = HashTable()  
+        self.trie = Trie()              
+        self.trie_nomor = Trie()       
 
-    # ---------- CREATE ----------
 
     def tambah_kontak(self, nama: str, nomor: str, email: str = ""):
         """
-        Menambahkan kontak baru ke SEMUA struktur data sekaligus.
-        Mengembalikan (True, pesan) kalau berhasil, (False, pesan) kalau gagal.
+        Menambahkan kontak baru ke semua struktur data sekaligus.
         """
         nama = nama.strip()
         nomor = nomor.strip()
@@ -51,7 +41,6 @@ class ContactManager:
 
         kontak = Contact(nama, nomor, email)
 
-        # Masukkan ke tiga-tiganya sekaligus
         self.avl.insert(nama.lower(), kontak)
         self.hash_table.set(nomor, kontak)
         self.trie.insert(nama)
@@ -59,7 +48,6 @@ class ContactManager:
 
         return True, f"Kontak '{nama}' berhasil ditambahkan."
 
-    # ---------- READ ----------
 
     def cari_berdasarkan_nama(self, nama: str):
         """Cari kontak lewat nama, memakai AVL Tree -> cepat, O(log n)."""
@@ -76,13 +64,6 @@ class ContactManager:
         return self.trie.cari_dengan_awalan(prefix.strip())
 
     def cari_nama_awalan(self, prefix: str):
-        """
-        PENCARIAN AWALAN NAMA (prefix search).
-        Contoh: ketik "wahyu" -> muncul SEMUA kontak yang namanya diawali
-        "wahyu", misalnya "Wahyu A", "Wahyu B", dst.
-        Caranya: Trie mencari semua nama yang cocok awalannya (cepat, O(m)),
-        lalu tiap nama itu dicocokkan ke AVL Tree untuk ambil data lengkapnya.
-        """
         prefix = prefix.strip()
         if not prefix:
             return []
@@ -96,12 +77,6 @@ class ContactManager:
         return hasil
 
     def cari_nomor_awalan(self, prefix: str):
-        """
-        PENCARIAN AWALAN NOMOR TELEPON (prefix search).
-        Contoh: ketik "0815" -> muncul SEMUA kontak yang nomornya diawali "0815".
-        Memakai Trie kedua (trie_nomor) yang isinya digit-digit nomor telepon,
-        jadi walau ada ribuan kontak, pencarian tetap cepat -> O(m).
-        """
         prefix = prefix.strip()
         if not prefix:
             return []
@@ -121,11 +96,6 @@ class ContactManager:
     # ---------- UPDATE ----------
 
     def update_kontak(self, nomor_lama: str, nama_baru: str, nomor_baru: str, email_baru: str = ""):
-        """
-        Mengubah data kontak. Caranya: hapus data lama dari 3 struktur,
-        lalu tambahkan lagi data yang baru (lebih sederhana daripada
-        mengubah tiap struktur satu-satu).
-        """
         kontak_lama = self.hash_table.get(nomor_lama)
         if not kontak_lama:
             return False, "Kontak dengan nomor tersebut tidak ditemukan."
@@ -148,7 +118,6 @@ class ContactManager:
     # ---------- DELETE ----------
 
     def hapus_kontak(self, nomor: str):
-        """Menghapus kontak dari SEMUA struktur data sekaligus, berdasarkan nomor telepon."""
         kontak = self.hash_table.get(nomor)
         if not kontak:
             return False, "Kontak tidak ditemukan."
@@ -163,7 +132,6 @@ class ContactManager:
     # ---------- IMPORT / EXPORT CSV ----------
 
     def ekspor_csv(self, path_file: str):
-        """Menyimpan semua kontak ke file CSV, supaya bisa dibuka di Excel dll."""
         kontak_list = self.semua_kontak_terurut()
         with open(path_file, mode="w", newline="", encoding="utf-8") as f:
             penulis = csv.DictWriter(f, fieldnames=["nama", "nomor", "email"])
@@ -173,7 +141,6 @@ class ContactManager:
         return True, f"{len(kontak_list)} kontak berhasil diekspor ke {path_file}"
 
     def impor_csv(self, path_file: str):
-        """Membaca file CSV dan menambahkan tiap barisnya sebagai kontak baru."""
         if not os.path.exists(path_file):
             return False, "File tidak ditemukan."
 

@@ -1,21 +1,14 @@
 """
-TRIE - Sederhananya:
-Ini seperti "pohon huruf". Setiap huruf dari nama disimpan sebagai cabang.
-Contoh: nama "BUDI" dan "BUDIMAN" akan berbagi cabang B-U-D-I, baru setelah
-itu bercabang beda. Ini yang bikin fitur autocomplete/prefix search jadi
-sangat cepat: waktu user ngetik "BUD", kita tinggal jalan ke cabang B-U-D
-lalu lihat semua nama yang ada di bawahnya.
-
-Kegunaan di aplikasi ini:
-- Fitur autocomplete: begitu user mengetik beberapa huruf awal nama,
-  aplikasi langsung menyarankan nama-nama yang cocok
+TRIE kita pake buat nyari nama yang efektif jadi kalau kita mau 
+nyari user dengan nama wahyu kita cuma perlu ngetik wah dan langsung
+muncul semua user yang berawalan wah
 """
 
 
 class NodeTrie:
     def __init__(self):
-        self.anak = {}          # dictionary huruf -> NodeTrie berikutnya
-        self.akhir_kata = False  # True kalau di titik ini sebuah nama berakhir
+        self.anak = {}          
+        self.akhir_kata = False  
 
 
 class Trie:
@@ -23,7 +16,7 @@ class Trie:
         self.root = NodeTrie()
 
     def insert(self, kata: str):
-        """Memasukkan sebuah nama ke dalam trie, huruf demi huruf."""
+        """Memasukkan semua nama ke dalam trie."""
         kata = kata.lower()
         node = self.root
         for huruf in kata:
@@ -33,11 +26,10 @@ class Trie:
         node.akhir_kata = True
 
     def _cari_node_prefix(self, prefix: str):
-        # Menyusuri trie mengikuti huruf-huruf di prefix
         node = self.root
         for huruf in prefix:
             if huruf not in node.anak:
-                return None  # prefix tidak ditemukan sama sekali
+                return None  
             node = node.anak[huruf]
         return node
 

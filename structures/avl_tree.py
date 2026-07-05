@@ -1,14 +1,8 @@
 """
-AVL TREE - Sederhananya:
-Ini adalah cara menyimpan kontak dalam bentuk "pohon" yang urut berdasarkan nama,
+avl tree itu cara nyimpen kontak dalam bentuk "pohon" yang urut berdasarkan nama,
 dan pohon ini "pintar" karena selalu menyeimbangkan dirinya sendiri setiap kali
 ada data baru masuk atau dihapus. Karena selalu seimbang, pencarian selalu cepat
 yaitu O(log n) - artinya walau datanya jutaan, pencarian tetap kilat.
-
-Kegunaan di aplikasi ini:
-- Menyimpan kontak terurut berdasarkan nama (A-Z)
-- Mencari kontak berdasarkan nama dengan cepat
-- Menampilkan semua kontak secara terurut alfabetis
 """
 
 
@@ -16,26 +10,22 @@ class NodeAVL:
     """Satu 'kotak' di dalam pohon, isinya key (nama) dan data (objek Contact)."""
 
     def __init__(self, key, data):
-        self.key = key            # nama kontak, dipakai untuk mengurutkan
-        self.data = data          # objek Contact yang sesungguhnya
-        self.kiri = None          # anak sebelah kiri (nama lebih kecil)
-        self.kanan = None         # anak sebelah kanan (nama lebih besar)
-        self.tinggi = 1           # tinggi node, dipakai untuk cek keseimbangan
+        self.key = key            
+        self.data = data         
+        self.kiri = None         
+        self.kanan = None         
+        self.tinggi = 1         
 
 
 class AVLTree:
     def __init__(self):
         self.root = None
 
-    # ---------- FUNGSI BANTUAN (rumus keseimbangan) ----------
 
     def _tinggi(self, node):
-        # Kalau node kosong, tingginya 0
         return node.tinggi if node else 0
 
     def _balance_factor(self, node):
-        # Selisih tinggi kiri dan kanan. Kalau lebih dari 1 atau kurang dari -1,
-        # berarti pohon "miring" dan perlu diseimbangkan lagi
         if not node:
             return 0
         return self._tinggi(node.kiri) - self._tinggi(node.kanan)
@@ -44,7 +34,6 @@ class AVLTree:
         node.tinggi = 1 + max(self._tinggi(node.kiri), self._tinggi(node.kanan))
 
     def _putar_kanan(self, y):
-        # "Putar" node ke kanan supaya pohon jadi seimbang lagi
         x = y.kiri
         T2 = x.kanan
         x.kanan = y
@@ -54,7 +43,6 @@ class AVLTree:
         return x
 
     def _putar_kiri(self, x):
-        # "Putar" node ke kiri supaya pohon jadi seimbang lagi
         y = x.kanan
         T2 = y.kiri
         y.kiri = x
@@ -63,14 +51,12 @@ class AVLTree:
         self._update_tinggi(y)
         return y
 
-    # ---------- INSERT ----------
 
     def insert(self, key, data):
         """Menambahkan kontak baru ke pohon, lalu pohon otomatis menyeimbangkan diri."""
         self.root = self._insert(self.root, key, data)
 
     def _insert(self, node, key, data):
-        # Langkah 1: masukkan seperti binary search tree biasa
         if not node:
             return NodeAVL(key, data)
         if key < node.key:
@@ -78,34 +64,26 @@ class AVLTree:
         elif key > node.key:
             node.kanan = self._insert(node.kanan, key, data)
         else:
-            # nama sudah ada, update datanya saja
             node.data = data
             return node
 
-        # Langkah 2: update tinggi node ini
         self._update_tinggi(node)
 
-        # Langkah 3: cek keseimbangan, putar kalau perlu
         balance = self._balance_factor(node)
 
-        # Kasus miring ke kiri
         if balance > 1 and key < node.kiri.key:
             return self._putar_kanan(node)
-        # Kasus miring ke kanan
         if balance < -1 and key > node.kanan.key:
             return self._putar_kiri(node)
-        # Kasus kiri-kanan
         if balance > 1 and key > node.kiri.key:
             node.kiri = self._putar_kiri(node.kiri)
             return self._putar_kanan(node)
-        # Kasus kanan-kiri
         if balance < -1 and key < node.kanan.key:
             node.kanan = self._putar_kanan(node.kanan)
             return self._putar_kiri(node)
 
         return node
 
-    # ---------- SEARCH ----------
 
     def search(self, key):
         """Mencari kontak berdasarkan nama. Cepat karena pohonnya seimbang."""
@@ -135,12 +113,10 @@ class AVLTree:
         elif key > node.key:
             node.kanan = self._delete(node.kanan, key)
         else:
-            # Node ditemukan, ini yang mau dihapus
             if not node.kiri:
                 return node.kanan
             if not node.kanan:
                 return node.kiri
-            # Punya dua anak: cari pengganti terkecil di subtree kanan
             pengganti = self._cari_termin(node.kanan)
             node.key = pengganti.key
             node.data = pengganti.data
@@ -149,7 +125,6 @@ class AVLTree:
         self._update_tinggi(node)
         balance = self._balance_factor(node)
 
-        # Seimbangkan lagi kalau perlu (sama seperti waktu insert)
         if balance > 1 and self._balance_factor(node.kiri) >= 0:
             return self._putar_kanan(node)
         if balance > 1 and self._balance_factor(node.kiri) < 0:
@@ -164,7 +139,6 @@ class AVLTree:
         return node
 
     def _cari_termin(self, node):
-        # Cari node paling kiri (nilai terkecil) di sebuah subtree
         while node.kiri:
             node = node.kiri
         return node

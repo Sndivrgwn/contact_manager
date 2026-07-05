@@ -18,7 +18,7 @@ from tkinter import ttk, messagebox, filedialog
 from services.contact_manager import ContactManager
 
 # ---------------------------------------------------------------------------
-# PALET WARNA - biar tampilannya konsisten dan enak dilihat (tema teal & putih)
+# PALET WARNA - biar tampilannya konsisten dan enak dilihat 
 # ---------------------------------------------------------------------------
 WARNA_HEADER = "#0f6d5c"        # teal tua untuk header
 WARNA_HEADER_TEKS = "#ffffff"
@@ -41,9 +41,7 @@ FONT_LABEL_TEBAL = ("Segoe UI", 10, "bold")
 
 class EntryDenganPlaceholder(ttk.Entry):
     """
-    Kotak isian (Entry) versi upgrade: bisa menampilkan teks abu-abu
-    "petunjuk" (placeholder) waktu masih kosong, contoh "Contoh: Budi Santoso".
-    Ini murni biar user awam lebih paham harus isi apa di kotak itu.
+    Kotak isian jadi user bisa isi data kontak
     """
 
     def __init__(self, master, placeholder="", **kwargs):
@@ -93,14 +91,13 @@ class AplikasiKontak(tk.Tk):
         self.minsize(900, 560)
         self.configure(bg=WARNA_LATAR)
 
-        # Ini "otak" aplikasi kita, semua logika struktur data ada di sini
         self.manager = ContactManager()
-        self.nomor_terpilih = None   # nomor kontak yang lagi dipilih di tabel (buat update/hapus)
+        self.nomor_terpilih = None  
 
         self._buat_gaya_tampilan()
         self._buat_header()
 
-        # Kontainer utama, isinya 2 kolom: kiri form, kanan tabel+pencarian
+        
         container = tk.Frame(self, bg=WARNA_LATAR)
         container.pack(fill="both", expand=True, padx=16, pady=12)
         container.columnconfigure(0, weight=0)
@@ -112,10 +109,6 @@ class AplikasiKontak(tk.Tk):
         self._buat_status_bar()
 
         self._refresh_tabel()
-
-    # ---------------------------------------------------------------
-    # GAYA / STYLING GLOBAL
-    # ---------------------------------------------------------------
 
     def _buat_gaya_tampilan(self):
         style = ttk.Style(self)
@@ -147,10 +140,6 @@ class AplikasiKontak(tk.Tk):
         style.map("Treeview", background=[("selected", WARNA_SELEKSI)],
                   foreground=[("selected", WARNA_TEKS_UTAMA)])
 
-    # ---------------------------------------------------------------
-    # HEADER ATAS
-    # ---------------------------------------------------------------
-
     def _buat_header(self):
         header = tk.Frame(self, bg=WARNA_HEADER, height=64)
         header.pack(fill="x", side="top")
@@ -170,10 +159,6 @@ class AplikasiKontak(tk.Tk):
             header, text="Total kontak: 0", bg=WARNA_HEADER, fg="#d7ede7", font=FONT_SUBJUDUL,
         )
         self.label_jumlah_header.pack(side="right", padx=20)
-
-    # ---------------------------------------------------------------
-    # PANEL KIRI: FORM TAMBAH / EDIT KONTAK
-    # ---------------------------------------------------------------
 
     def _buat_panel_form(self, parent):
         panel = ttk.LabelFrame(parent, text="  Form Kontak (Tambah / Edit)  ", style="Kartu.TLabelframe")
@@ -234,9 +219,6 @@ class AplikasiKontak(tk.Tk):
         else:
             self.saran_nama_var.set("Nama baru, belum ada yang mirip.")
 
-    # ---------------------------------------------------------------
-    # PANEL KANAN: PENCARIAN + TABEL
-    # ---------------------------------------------------------------
 
     def _buat_panel_kanan(self, parent):
         kanan = ttk.Frame(parent, style="Kartu.TFrame")
@@ -255,14 +237,12 @@ class AplikasiKontak(tk.Tk):
         isi = ttk.Frame(panel, style="Kartu.TFrame")
         isi.pack(fill="x", padx=16, pady=12)
 
-        # --- Cari berdasarkan nama (prefix search pakai Trie) ---
         ttk.Label(isi, text="🔎 Cari Nama (awalan)", background=WARNA_KARTU,
                   font=FONT_LABEL_TEBAL).grid(row=0, column=0, sticky="w")
         self.cari_nama_entry = EntryDenganPlaceholder(isi, placeholder="Ketik: wahyu ...", width=28)
         self.cari_nama_entry.grid(row=1, column=0, sticky="w", padx=(0, 20))
         self.cari_nama_entry.bind("<KeyRelease>", self._saat_ketik_cari)
 
-        # --- Cari berdasarkan nomor (prefix search pakai Trie nomor) ---
         ttk.Label(isi, text="🔎 Cari Nomor HP (awalan)", background=WARNA_KARTU,
                   font=FONT_LABEL_TEBAL).grid(row=0, column=1, sticky="w")
         self.cari_nomor_entry = EntryDenganPlaceholder(isi, placeholder="Ketik: 0815 ...", width=28)
@@ -282,7 +262,6 @@ class AplikasiKontak(tk.Tk):
         kata_nama = self.cari_nama_entry.get_nilai_asli()
         kata_nomor = self.cari_nomor_entry.get_nilai_asli()
 
-        # Kalau dua-duanya kosong, tampilkan semua kontak
         if not kata_nama and not kata_nomor:
             self._refresh_tabel()
             return
@@ -291,7 +270,6 @@ class AplikasiKontak(tk.Tk):
         hasil_nomor = self.manager.cari_nomor_awalan(kata_nomor) if kata_nomor else None
 
         if hasil_nama is not None and hasil_nomor is not None:
-            # Kalau user isi dua-duanya, ambil irisan (kontak yang cocok keduanya)
             nomor_di_hasil_nomor = {k.nomor for k in hasil_nomor}
             hasil = [k for k in hasil_nama if k.nomor in nomor_di_hasil_nomor]
         else:
@@ -305,9 +283,6 @@ class AplikasiKontak(tk.Tk):
         self.cari_nomor_entry.kosongkan()
         self._refresh_tabel()
 
-    # ---------------------------------------------------------------
-    # TABEL DAFTAR KONTAK
-    # ---------------------------------------------------------------
 
     def _buat_tabel_kontak(self, parent):
         panel = ttk.LabelFrame(parent, text="  Daftar Kontak (terurut A-Z)  ", style="Kartu.TLabelframe")
@@ -329,7 +304,6 @@ class AplikasiKontak(tk.Tk):
         self.tabel.column("nomor", width=170)
         self.tabel.column("email", width=260)
 
-        # Warna selang-seling (zebra) biar tabel lebih enak dibaca
         self.tabel.tag_configure("ganjil", background=WARNA_ZEBRA_GANJIL)
         self.tabel.tag_configure("genap", background=WARNA_ZEBRA_GENAP)
 
@@ -341,7 +315,7 @@ class AplikasiKontak(tk.Tk):
         scrollbar.grid(row=0, column=1, sticky="ns")
 
     def _tampilkan_daftar(self, daftar_kontak):
-        """Menggambar ulang isi tabel sesuai daftar kontak yang diberikan, dengan warna zebra."""
+        """Menggambar ulang isi tabel sesuai daftar kontak yang diberikan."""
         for baris in self.tabel.get_children():
             self.tabel.delete(baris)
         for i, kontak in enumerate(daftar_kontak):
@@ -349,13 +323,13 @@ class AplikasiKontak(tk.Tk):
             self.tabel.insert("", "end", values=(kontak.nama, kontak.nomor, kontak.email), tags=(tag,))
 
     def _refresh_tabel(self):
-        """Menampilkan SEMUA kontak, terurut A-Z (langsung dari AVL Tree)."""
+        """Menampilkan semua kontak, terurut A-Z (langsung dari AVL Tree)."""
         semua = self.manager.semua_kontak_terurut()
         self._tampilkan_daftar(semua)
         self._update_info_jumlah("Menampilkan semua kontak.")
 
     def _saat_pilih_baris(self, event):
-        """Waktu user klik satu baris di tabel, form otomatis terisi datanya (siap update/hapus)."""
+        """Waktu user klik satu baris di tabel, form otomatis keisi datanya (siap update/hapus)."""
         item_terpilih = self.tabel.selection()
         if not item_terpilih:
             return
@@ -436,9 +410,6 @@ class AplikasiKontak(tk.Tk):
         if berhasil:
             self._refresh_tabel()
 
-    # ---------------------------------------------------------------
-    # STATUS BAR & FUNGSI KECIL PEMBANTU
-    # ---------------------------------------------------------------
 
     def _buat_status_bar(self):
         bar = tk.Frame(self, bg="#e3efec", height=30)
