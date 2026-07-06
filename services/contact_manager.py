@@ -4,6 +4,7 @@ disini kita menghubungkan avl tree hash table dan trie jadi di gui tinggal tampi
 
 import csv
 import os
+import time
 
 from models.contact import Contact
 from structures.avl_tree import AVLTree
@@ -159,3 +160,53 @@ class ContactManager:
                     jumlah_gagal += 1
 
         return True, f"Impor selesai: {jumlah_sukses} berhasil, {jumlah_gagal} gagal/dilewati."
+
+    def benchmark(self):
+        """
+        Mengukur waktu eksekusi operasi utama pada AVL Tree,
+        Hash Table, dan Trie menggunakan data yang sedang tersimpan.
+        """
+
+        semua = self.semua_kontak_terurut()
+
+        if len(semua) == 0:
+            return "Belum ada data untuk diuji."
+
+        kontak = semua[len(semua) // 2]
+
+        hasil = []
+        hasil.append(f"Jumlah Data : {len(semua)}")
+        hasil.append("")
+
+        # ================= AVL =================
+
+        start = time.perf_counter()
+        self.avl.search(kontak.nama.lower())
+        avl_search = (time.perf_counter() - start) * 1_000_000
+
+        hasil.append("AVL TREE")
+        hasil.append(f"Search : {avl_search:.3f} µs")
+
+        # ================= HASH =================
+
+        start = time.perf_counter()
+        self.hash_table.get(kontak.nomor)
+        hash_search = (time.perf_counter() - start) * 1_000_000
+
+        hasil.append("")
+        hasil.append("HASH TABLE")
+        hasil.append(f"Search : {hash_search:.3f} µs")
+
+        # ================= TRIE =================
+
+        prefix = kontak.nama[:3]
+
+        start = time.perf_counter()
+        self.trie.cari_dengan_awalan(prefix)
+        trie_search = (time.perf_counter() - start) * 1_000_000
+
+        hasil.append("")
+        hasil.append("TRIE")
+        hasil.append(f"Prefix Search : {trie_search:.3f} µs")
+
+        return "\n".join(hasil)

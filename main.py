@@ -110,6 +110,13 @@ class AplikasiKontak(tk.Tk):
 
         self._refresh_tabel()
 
+    def _benchmark(self):
+        hasil = self.manager.benchmark()
+        messagebox.showinfo(
+            "Benchmark Kompleksitas",
+            hasil
+        )
+    
     def _buat_gaya_tampilan(self):
         style = ttk.Style(self)
         try:
@@ -199,7 +206,7 @@ class AplikasiKontak(tk.Tk):
                   font=FONT_LABEL_TEBAL).pack(anchor="w", pady=(0, 6))
         ttk.Button(isi, text="⇩  Ekspor ke CSV", command=self._ekspor_csv).pack(fill="x", pady=3)
         ttk.Button(isi, text="⇧  Impor dari CSV", command=self._impor_csv).pack(fill="x", pady=3)
-
+        ttk.Button(isi,text="Benchmark Kompleksitas",command=self._benchmark).pack(fill="x", pady=3)
         # Label kecil penanda kontak yang sedang dipilih untuk edit
         self.label_status_pilihan = ttk.Label(
             isi, text="Belum ada kontak dipilih.", background=WARNA_KARTU,
