@@ -24,10 +24,6 @@ contact_manager/
 ```
 
 ## Cara Menjalankan
-
-Butuh Python 3.8+ (Tkinter biasanya sudah bawaan Python di Windows/Mac; di
-Linux kadang perlu install `sudo apt install python3-tk`).
-
 ```bash
 cd contact_manager
 python main.py
@@ -36,12 +32,11 @@ python main.py
 ## Fitur di GUI
 
 1. **Tambah Kontak** - isi form lalu klik "Tambah Kontak"
-2. **Autocomplete** - ketik beberapa huruf di kotak Nama, saran nama otomatis muncul (dari Trie)
-3. **Cari Nama** - pencarian cepat lewat AVL Tree
-4. **Cari Nomor** - pencarian instan lewat Hash Table
-5. **Klik baris di tabel** - form otomatis terisi, siap untuk Update/Hapus
-6. **Ekspor ke CSV** - simpan semua kontak ke file .csv
-7. **Impor dari CSV** - baca file .csv dan tambahkan sebagai kontak baru
+2. **Cari Nama** - pencarian cepat lewat AVL Tree
+3. **Cari Nomor** - pencarian instan lewat Hash Table
+4. **Klik baris di tabel** - form otomatis terisi, siap untuk Update/Hapus
+5. **Ekspor ke CSV** - simpan semua kontak ke file .csv
+6. **Impor dari CSV** - baca file .csv dan tambahkan sebagai kontak baru
 
 ## Kompleksitas (Big-O)
 
